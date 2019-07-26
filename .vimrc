@@ -1,12 +1,11 @@
-" HVN paths {{{
+" paths {{{
 " Set XDG_CONFIG_HOME/haskell-vim-now to load user's config files
 if exists($XDG_CONFIG_HOME)
-  let hvn_config_dir = $XDG_CONFIG_HOME . "/haskell-vim-now"
+  let hvn_config_dir = $XDG_CONFIG_HOME . "/vimrc"
 else
-  let hvn_config_dir = $HOME . "/.config/haskell-vim-now"
+  let hvn_config_dir = $HOME . "/.config/vimrc"
 endif
 
-" Haskell Vim Now paths
 " haskell config path
 let hvn_config_haskell = expand(resolve(hvn_config_dir . "/vimrc.haskell"))
 " pre config path
@@ -96,6 +95,9 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'jeffkreeftmeijer/vim-numbertoggle' " number and relative number toggle
 Plug 'ludovicchabant/vim-gutentags'      " automatically generate tags
+Plug 'garbas/vim-snipmate'
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'tomtom/tlib_vim'
 
 " Git
 Plug 'tpope/vim-fugitive'
@@ -581,9 +583,16 @@ nnoremap <silent> <leader>g? :call CommittedFiles()<CR>:copen<CR>
 set completeopt+=longest
 
 " Use buffer words as default tab completion
-let g:SuperTabDefaultCompletionType = '<c-x><c-p>'
+let g:SuperTabDefaultCompletionType = '<c-n>'
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 
 " }}}
+
+
 
 " Customization {{{
 execute 'source '. hvn_config_haskell
