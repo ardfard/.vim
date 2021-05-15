@@ -1,11 +1,3 @@
-" HVN paths {{{
-" stack bin path symlink
-let hvn_stack_bin = expand(resolve(hvn_config_dir . "/.stack-bin"))
-" Find custom built hasktags, codex etc
-let $PATH = expand(hvn_stack_bin) . ':' . $PATH
-
-" }}}
-
 " Conceal {{{
 " Use same color behind concealed unicode characters
 hi clear Conceal
@@ -105,24 +97,37 @@ augroup whitespace
   autocmd BufWrite *.hs :call DeleteTrailingWS()
 augroup END
 
+" Format file for every save
+autocmd BufWrite *.hs :Autoformat
+" Don't automatically indent on save, since vim's autoindent for haskell is buggy
+autocmd FileType haskell let b:autoformat_autoindent=0
+
+let g:autoformat_verbosemode=1
+
 " }}}
 
 "Completion, Syntax check, Lint & Refactor {{{
 
-augroup haskell
-  autocmd!
-  autocmd FileType haskell map <silent> <leader><cr> :noh<cr>:GhcModTypeClear<cr>
-  autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-augroup END
+"augroup haskell
+"  autocmd!
+"  autocmd FileType haskell map <silent> <leader><cr> :noh<cr>:GhcModTypeClear<cr>
+"  autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+"augroup END
 
 " Provide (neco-ghc) omnicompletion
-if has("gui_running")
-  imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-else " no gui
-  if has("unix")
-    inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-  endif
-endif
+"if has("gui_running")
+"  imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+"else " no gui
+"  if has("unix")
+"    inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+"  endif
+"endif
+
+
+let g:intero_backend = {
+  \ 'command': 'cabal repl',
+  \ 'cwd': expand('%:p:h'),
+  \}
 
 " Disable hlint-refactor-vim's default keybindings
 let g:hlintRefactor#disableDefaultKeybindings = 1
@@ -132,19 +137,19 @@ map <silent> <leader>hr :call ApplyOneSuggestion()<CR>
 map <silent> <leader>hR :call ApplyAllSuggestions()<CR>
 
 " Show types in completion suggestions
-let g:necoghc_enable_detailed_browse = 1
+" let g:necoghc_enable_detailed_browse = 1
 " Resolve ghcmod base directory
-au FileType haskell let g:ghcmod_use_basedir = getcwd()
+" au FileType haskell let g:ghcmod_use_basedir = getcwd()
 
 " Type of expression under cursor
-nmap <silent> <leader>ht :GhcModType<CR>
+"nmap <silent> <leader>ht :GhcModType<CR>
 " Insert type of expression under cursor
-nmap <silent> <leader>hT :GhcModTypeInsert<CR>
+"nmap <silent> <leader>hT :GhcModTypeInsert<CR>
 " GHC errors and warnings
-nmap <silent> <leader>hc :Neomake ghcmod<CR>
+"nmap <silent> <leader>hc :Neomake ghcmod<CR>
 
 " open the neomake error window automatically when an error is found
-let g:neomake_open_list = 2
+" let g:neomake_open_list = 2
 
 " Fix path issues from vim.wikia.com/wiki/Set_working_directory_to_the_current_file
 let s:default_path = escape(&path, '\ ') " store default value of 'path'
@@ -158,10 +163,10 @@ autocmd BufRead *
       \ exec "set path^=".s:default_path
 
 " Haskell Lint
-nmap <silent> <leader>hl :Neomake hlint<CR>
+" nmap <silent> <leader>hl :Neomake hlint<CR>
 
 " Options for Haskell Syntax Check
-let g:neomake_haskell_ghc_mod_args = '-g-Wall'
+" let g:neomake_haskell_ghc_mod_args = '-g-Wall'
 
 " }}}
 

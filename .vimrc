@@ -8,6 +8,8 @@ endif
 
 " haskell config path
 let hvn_config_haskell = expand(resolve(hvn_config_dir . "/vimrc.haskell"))
+" go config path 
+let hvn_config_go = expand(resolve(hvn_config_dir . "/vimrc.golang"))
 " pre config path
 let hvn_config_pre = expand(resolve(hvn_config_dir . "/vimrc.local.pre"))
 " post config path
@@ -98,6 +100,7 @@ Plug 'ludovicchabant/vim-gutentags'      " automatically generate tags
 Plug 'garbas/vim-snipmate'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
+Plug 'Chiel92/vim-autoformat'
 
 " Git
 Plug 'tpope/vim-fugitive'
@@ -109,7 +112,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'majutsushi/tagbar'
-Plug '~/.fzf'
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 " Text manipulation
@@ -125,13 +128,14 @@ Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'christoomey/vim-tmux-navigator'
 
 " Language server support
-Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Haskell
 Plug 'neovimhaskell/haskell-vim', { 'for': 'haskell' }
 Plug 'enomsg/vim-haskellConcealPlus', { 'for': 'haskell' }
 Plug 'Twinside/vim-hoogle', { 'for': 'haskell' }
 Plug 'mpickering/hlint-refactor-vim', { 'for': 'haskell' }
+" Plug 'parsonsmatt/intero-neovim', { 'for': 'haskell' }
 
 " Ruby
 Plug 'tpope/vim-rails'
@@ -143,6 +147,12 @@ Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
 " Colorscheme
 Plug 'vim-scripts/wombat256.vim'
+
+" Nix
+Plug 'LnL7/vim-nix'
+
+" Scala
+Plug 'derekwyatt/vim-scala'
 
 
 call plug#end()
@@ -334,13 +344,22 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-" Copy and paste to os clipboard
-nmap <leader>y "*y
-vmap <leader>y "*y
-nmap <leader>d "*d
-vmap <leader>d "*d
-nmap <leader>p "*p
-vmap <leader>p "*p
+if has('unix')
+  " Copy and paste to os clipboard
+  nmap <leader>y "+y
+  vmap <leader>y "+y
+  nmap <leader>d "+d
+  vmap <leader>d "+d
+  nmap <leader>p "+p
+  vmap <leader>p "+p
+else
+  nmap <leader>y "*y
+  vmap <leader>y "*y
+  nmap <leader>d "*d
+  vmap <leader>d "*d
+  nmap <leader>p "*p
+  vmap <leader>p "*p
+end
 
 " }}}
 
@@ -596,8 +615,11 @@ inoremap <silent><expr> <TAB>
 
 " Customization {{{
 execute 'source '. hvn_config_haskell
+execute 'source '. hvn_config_go
 if filereadable(hvn_config_post)
   execute 'source '. hvn_config_post
 endif
+
+let verbose=1
 
 " }}}
